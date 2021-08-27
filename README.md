@@ -59,4 +59,6 @@ error: access to path '/nix/store/4p7vhys75r7bv8dl9lhfcvgxk01jh704-source/test.t
 Restricted mode seems to not know that cleaned path should be accesible to the Nix.
 This happens because new, cleaned path is in different place in store and restricted mode doesn't allow acccesing it.
 
+I think that this happens because `NIX_PATH` is updated when building mkDerivation (based on src, buildInputs, etc), but creating arguments to it requires accesing paths that were not yet added to `NIX_PATH`.
+
 This doesn't seem like expected behavior and I am not sure what is the workaround.
