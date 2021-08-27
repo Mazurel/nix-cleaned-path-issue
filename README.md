@@ -1,6 +1,6 @@
 # Test of cleaned paths and restricted mode in Nix 
 
-This is a small experiment that demonstrates potential issue with flake's restricted mode.
+This is a small experiment that demonstrates a potential issue with flake's restricted mode.
 
 ## Structure and usage
 
@@ -9,7 +9,7 @@ To run flake build, use `nix build .#<Type>` and to run legacy build, use `nix b
 
 There is also `test.sh` script which runs all builds automatically.
 
-## Avaible `Type`s of builds
+## Available `Type`s of builds
 
 There are 4 types, of builds:
 
@@ -56,9 +56,10 @@ error: access to path '/nix/store/4p7vhys75r7bv8dl9lhfcvgxk01jh704-source/test.t
 
 *Or at least what I think this means*
 
-Restricted mode seems to not know that cleaned path should be accesible to the Nix.
-This happens because new, cleaned path is in different place in store and restricted mode doesn't allow acccesing it.
+Restricted mode seems to not know that cleaned path should be accessible to the Nix.
+This happens because the new, cleaned path is in a different place in store and restricted mode doesn't allow accessing it.
 
-I think that this happens because `NIX_PATH` is updated when building mkDerivation (based on src, buildInputs, etc), but creating arguments to it requires accesing paths that were not yet added to `NIX_PATH`.
+I think that this happens because `NIX_PATH` is updated when building mkDerivation (based on src, buildInputs, etc), but creating arguments to it requires accessing paths that were not yet added to `NIX_PATH`.
 
-This doesn't seem like expected behavior and I am not sure what is the workaround.
+This doesn't seem like expected behavior, and I am not sure what is the workaround.
+
