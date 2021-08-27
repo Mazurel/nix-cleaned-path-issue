@@ -8,15 +8,14 @@
       version = "xyz";
 
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" ];
-      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
-      nixpkgsFor = forAllSystems
-        (system: import nixpkgs
-          {
-            inherit system;
-            overlays = [ self.overlay ];
-          });
-    in
-    {
+      forAllSystems = f:
+        nixpkgs.lib.genAttrs supportedSystems (system: f system);
+      nixpkgsFor = forAllSystems (system:
+        import nixpkgs {
+          inherit system;
+          overlays = [ self.overlay ];
+        });
+    in {
       overlay = final: prev: {
         hello-passed-src = final.callPackage ./hello.nix {
           inherit version;
@@ -39,13 +38,12 @@
         };
       };
 
-      packages = forAllSystems (system:
-        {
-          inherit (nixpkgsFor.${system})
-            # Working:
-            hello-passed-src
-            # Not working:
-            hello-not-passed-src hello-passed-cleaned-src hello-not-passed-cleaned-src;
-        });
+      packages = forAllSystems (system: {
+        inherit (nixpkgsFor.${system})
+          # Working:
+          hello-passed-src hello-not-passed-src
+          # Not working:
+          hello-passed-cleaned-src hello-not-passed-cleaned-src;
+      });
     };
 }
