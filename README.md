@@ -1,6 +1,11 @@
 # Test of cleaned paths and restricted mode in Nix 
 
-This is a small experiment that demonstrates a potential issue with flake's restricted mode.
+This is a small experiment that demonstrates an issue with flake's restricted mode.
+
+## Related issues
+
+- https://github.com/NixOS/nix/issues/3732
+- https://github.com/NixOS/nix/issues/3234
 
 ## Structure and usage
 
@@ -52,14 +57,13 @@ error: access to path '/nix/store/4p7vhys75r7bv8dl9lhfcvgxk01jh704-source/test.t
 (use '--show-trace' to show detailed location information)
 ```
 
-## Conclusion (?)
+## Fixing PR
 
-*Or at least what I think this means*
+It seems like [Tomberek's PR](https://github.com/NixOS/nix/pull/5163) fixes this issue.
 
-Restricted mode seems to not know that cleaned path should be accessible to the Nix.
-This happens because the new, cleaned path is in a different place in store and restricted mode doesn't allow accessing it.
+```
+$ nix shell "github:tomberek/nix/flakes_filterSource"
+$ sh test.sh 
+```
 
-I think that this happens because `NIX_PATH` is updated when building mkDerivation (based on src, buildInputs, etc), but creating arguments to it requires accessing paths that were not yet added to `NIX_PATH`.
-
-This doesn't seem like expected behavior, and I am not sure what is the workaround.
-
+Does not produce any errors.
